@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>Szachy</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chessboard-container">
+        <div class="modal">
+          <div class="modal_header">
+            <span class="winner">Biały</span>
+            <span>Wygrywa partię</span>
+          </div>
+          <div class="modal_body">
+            <div class="info">
+              <span>Roregrana ilość tur:</span><span class="info-tour"></span>
+            </div>
+            <div class="info">
+              <span>Pozostały czas:</span><span class="info-timer"></span>
+            </div>
+            <div class="info">
+              <span>Przewaga w punktach:</span
+              ><span class="info-points"></span>
+            </div>
+          </div>
+          <div class="modal_footer">
+            <div class="button-restart start">
+              <i class="fa-solid fa-arrow-rotate-right"></i>
+            </div>
+          </div>
+        </div>
+        <div class="timer-box black-timer-box">
+          <div class="points">
+            <i class="fas fa-chess"></i><span class="black-points">+0</span>
+          </div>
+          <div class="timer"><span class="black-clock">10:00</span></div>
+        </div>
+        <div class="chessboard">
+          <div class="cords-ah">
+            <div class="cord"><span>a</span></div>
+            <div class="cord"><span>b</span></div>
+            <div class="cord"><span>c</span></div>
+            <div class="cord"><span>d</span></div>
+            <div class="cord"><span>e</span></div>
+            <div class="cord"><span>f</span></div>
+            <div class="cord"><span>g</span></div>
+            <div class="cord"><span>h</span></div>
+          </div>
+          <div class="cords-18">
+            <div class="cord"><span>8</span></div>
+            <div class="cord"><span>7</span></div>
+            <div class="cord"><span>6</span></div>
+            <div class="cord"><span>5</span></div>
+            <div class="cord"><span>4</span></div>
+            <div class="cord"><span>3</span></div>
+            <div class="cord"><span>2</span></div>
+            <div class="cord"><span>1</span></div>
+          </div>
+        </div>
+        <div class="timer-box white-timer-box">
+          <div class="points">
+            <i class="fas fa-chess"></i><span class="white-points">+0</span>
+          </div>
+          <div class="timer"><span class="white-clock">10:00</span></div>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="move-list"></div>
+        <div class="button-container">
+          <div class="button start">ROZPOCZNIJ PARTIĘ</div>
+        </div>
+      </div>
+      <script src="./script/game.js" type="module"></script>
+    </div>
+  </body>
+</html>
