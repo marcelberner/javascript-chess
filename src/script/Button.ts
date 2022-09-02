@@ -1,8 +1,11 @@
 class Button {
-  constructor(button, restartButton) {
-    this.restartButton = restartButton;
-    this.button = button;
+  restartButton: HTMLDivElement;
+  button: HTMLDivElement;
+  isStarted: boolean;
 
+  constructor() {
+    this.restartButton = document.querySelector(".button-restart")!;
+    this.button = document.querySelector(".button")!;
     this.isStarted = false;
   }
 
@@ -22,7 +25,4 @@ class Button {
   }
 }
 
-export const button = new Button(
-  document.querySelector(".button"),
-  document.querySelector(".button-restart")
-);
+export const button = new Button();

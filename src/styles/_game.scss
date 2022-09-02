@@ -1,0 +1,21 @@
+@import "./mixins";
+@import "./variables";
+
+.container {
+  position: absolute;
+  display: grid;
+  justify-content: center;
+  align-items: start;
+  grid-template-columns: 7fr 3fr;
+  grid-template-rows: max-content;
+  left: 50%;
+  padding: 2rem;
+  gap: 3rem;
+  transform: translate(-50%, 0);
+  width: 90%;
+  overflow: hidden;
+  @include media($tablet-large) {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+  }
+}

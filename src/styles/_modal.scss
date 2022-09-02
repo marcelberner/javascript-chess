@@ -1,0 +1,76 @@
+.modal {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40rem;
+    height: 70%;
+    background-color: aliceblue;
+    box-shadow: 0px 0px 5px black;
+    border-radius: 10px;
+    z-index: 5;
+  }
+  
+  .show {
+    display: flex;
+  }
+  
+  .modal_header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 20%;
+    font-size: 2rem;
+    color: aliceblue;
+    background-color: #95bb4a;
+    border-radius: 10px 10px 20px 20px;
+  }
+  
+  .winner {
+    font-size: 3.5rem;
+    font-weight: bold;
+  }
+  
+  .modal_body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  
+  .info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 2rem;
+    margin: 1rem;
+    width: 82%;
+    font-weight: 600;
+    background-color: rgb(224, 231, 238);
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  
+  .info-tour,
+  .info-timer,
+  .info-points {
+    display: block;
+    color: aliceblue;
+    text-align: center;
+    min-width: 3rem;
+    padding: .5rem;
+    font-size: 2.3rem;
+    background-color: #e48225;
+    border-radius: 5px;
+  }
+  
+  .modal_footer {
+    display: flex;
+    flex-basis: 30%;
+    align-items: center;
+    justify-content: center;
+  }

@@ -1,0 +1,10 @@
+.pieces {
+  position: relative;
+  width: 85%;
+  height: 85%;
+  transition: 0.2s;
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: grab;
+  z-index: 2;
+}

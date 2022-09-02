@@ -1,14 +1,24 @@
-import { game } from "./game.js";
+import { game } from "./Game";
 
 export class Timer {
-  constructor(whiteClock, blackClock) {
+  whiteClock: HTMLDivElement;
+  blackClock: HTMLDivElement;
+  whiteTimerMinutes: number;
+  whiteTimerSeconds: number;
+  blackTimerMinutes: number;
+  blackTimerSeconds: number;
+  whiteClockInterval: NodeJS.Timer | number | null;
+  blackClockInterval: NodeJS.Timer | number | null;
+  timerFlag: boolean;
+
+  constructor() {
     this.whiteTimerMinutes = 10;
     this.whiteTimerSeconds = 0;
     this.blackTimerMinutes = 10;
     this.blackTimerSeconds = 0;
 
-    this.whiteClock = whiteClock;
-    this.blackClock = blackClock;
+    this.whiteClock = document.querySelector(".white-clock")!;
+    this.blackClock = document.querySelector(".black-clock")!;
 
     this.whiteClockInterval = null;
     this.blackClockInterval = null;
@@ -17,8 +27,8 @@ export class Timer {
   }
 
   timerStop() {
-    if (this.blackClockInterval) clearInterval(this.blackClockInterval);
-    if (this.whiteClockInterval) clearInterval(this.whiteClockInterval);
+    if (this.blackClockInterval) clearInterval(this.blackClockInterval as number);
+    if (this.whiteClockInterval) clearInterval(this.whiteClockInterval as number as number);
   }
 
   setBlackTimer() {
@@ -48,7 +58,7 @@ export class Timer {
   }
 
   timerWhite() {
-    if (this.blackClockInterval) clearInterval(this.blackClockInterval);
+    if (this.blackClockInterval) clearInterval(this.blackClockInterval as number);
     this.whiteClockInterval = setInterval(() => {
       if (this.whiteTimerSeconds == 0) {
         this.whiteTimerSeconds = 60;
@@ -59,14 +69,14 @@ export class Timer {
       this.setWhiteTimer();
 
       if (this.whiteTimerSeconds == 0 && this.whiteTimerMinutes == 0) {
-        this.timerStop(this.whiteClockInterval);
+        this.timerStop();
         game.endGame();
       }
     }, 1000);
   }
 
   timerBlack() {
-    if (this.whiteClockInterval) clearInterval(this.whiteClockInterval);
+    if (this.whiteClockInterval) clearInterval(this.whiteClockInterval as number);
     this.blackClockInterval = setInterval(() => {
       if (this.blackTimerSeconds == 0) {
         this.blackTimerSeconds = 60;
@@ -75,7 +85,7 @@ export class Timer {
       this.blackTimerSeconds--;
       this.setBlackTimer();
       if (this.blackTimerSeconds == 0 && this.blackTimerMinutes == 0) {
-        this.timerStop(this.blackClockInterval);
+        this.timerStop();
         game.endGame();
       }
     }, 1000);
@@ -90,25 +100,21 @@ export class Timer {
     this.timerFlag = !this.timerFlag;
   }
 
-  getTimer(playerColor) {
-
+  getTimer(playerColor: string) {
     if (playerColor == "white")
       return `${this.blackTimerMinutes}:${
         this.blackTimerSeconds < 10
           ? "0" + this.blackTimerSeconds
           : this.blackTimerSeconds
       }`;
-
     else if (playerColor == "black")
       return `${this.whiteTimerMinutes}:${
         this.whiteTimerSeconds < 10
           ? "0" + this.whiteTimerSeconds
           : this.whiteTimerSeconds
       }`;
+    else throw new Error("Unexpected error");
   }
 }
 
-export const timer = new Timer(
-  document.querySelector(".white-clock"),
-  document.querySelector(".black-clock")
-);
+export const timer = new Timer();

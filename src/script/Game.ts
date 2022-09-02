@@ -1,24 +1,29 @@
-import { chessboard } from "./chessboard.js";
-import { button } from "./button.js";
-import { timer } from "./timer.js";
-import { modal } from "./modal.js";
-import { points } from "./points.js";
-import { PIECES_ARRAY } from "./pieces.js";
-import { moveList } from "./moveList.js";
+import { chessboard } from "./Chessboard";
+import { button } from "./Button";
+import { timer } from "./Timer";
+import { modal } from "./Modal";
+import { points } from "./Points";
+import { moveList } from "./MoveList";
 
 class Game {
+  playerMoveSwitch: boolean;
+  gameIsStarted: boolean;
+  gamePaused: boolean;
+  playerColor: "white" | "black";
+
   constructor() {
     this.playerMoveSwitch = true;
     this.gameIsStarted = false;
     this.gamePaused = false;
     this.playerColor = this.playerMoveSwitch ? "white" : "black";
   }
-  
+
   init() {
     chessboard.generateBoard();
 
     button.button.addEventListener("click", () => {
       if (this.gamePaused) return;
+
       button.changeButtonState();
       !this.gameIsStarted ? this.start() : this.endGame();
     });
@@ -34,7 +39,7 @@ class Game {
   endGame() {
     this.gamePaused = true;
     this.gameIsStarted = false;
-    
+
     timer.timerStop();
     modal.updateModal();
     modal.changeModalState();
@@ -50,7 +55,9 @@ class Game {
 
     button.buttonDisableState();
 
-    PIECES_ARRAY.forEach((piece) => piece.remove());
+    chessboard.squaresArray.forEach(
+      (square) => square.firstElementChild && square.firstElementChild!.remove()
+    );
     chessboard.removeSquares();
     chessboard.generateBoard();
 
@@ -74,4 +81,3 @@ class Game {
 }
 
 export const game = new Game();
-game.init();

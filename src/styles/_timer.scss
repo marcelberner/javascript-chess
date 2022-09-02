@@ -1,0 +1,39 @@
+@import "./mixins";
+@import "./variables";
+
+.timer-box {
+  display: flex;
+  margin: 10px 0;
+  gap: 8rem;
+  justify-content: flex-end;
+}
+
+.timer {
+  display: flex;
+  font-size: 3rem;
+  flex-basis: 20%;
+  align-items: center;
+  justify-content: center;
+  background-color: aliceblue;
+  border-radius: 5px;
+  @include media($tablet-large) {
+    flex-basis: 25%;
+    font-weight: 600;
+  }
+}
+
+.black-timer-box {
+  grid-area: timer-b;
+}
+
+.white-timer-box {
+  grid-area: timer-w;
+}
+
+.points {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b4b3b2;
+}

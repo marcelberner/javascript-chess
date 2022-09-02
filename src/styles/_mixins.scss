@@ -1,0 +1,7 @@
+@import "./variables.scss";
+
+@mixin media($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}

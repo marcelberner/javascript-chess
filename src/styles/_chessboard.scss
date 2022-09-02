@@ -1,0 +1,101 @@
+@import "./mixins";
+@import "./variables";
+
+.chessboard-container {
+  position: relative;
+  display: grid;
+  left: 50%;
+  transform: translate(-50%, 0);
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: "timer-b" "board" "timer-w";
+  max-width: 81vh;
+}
+
+.chessboard {
+  position: relative;
+  display: grid;
+  grid-area: board;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  aspect-ratio: 1/1;
+  box-shadow: 0px 0px 5px black;
+  transition: 0.2s;
+  border-radius: 5px;
+  overflow: hidden;
+  user-select: none;
+  @include media($tablet-large) {
+    max-width: 85vw;
+    min-width: 85vw;
+  }
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.reverse {
+  grid-template-areas: "timer-w" "board" "timer-b";
+}
+
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  aspect-ratio: 1/1;
+}
+
+.black {
+  background-color: #769656;
+}
+
+.white {
+  background-color: #eeeed2;
+}
+
+.danger {
+  background-color: rgb(192, 56, 56);
+}
+
+.selected {
+  background-color: rgba(129, 186, 250);
+}
+
+.hint {
+  background-color: #d3d3d3;
+}
+
+.cords-ah {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  align-self: flex-end;
+  margin-bottom: 2px;
+  color: #eeeed2;
+}
+
+.cords-ah .cord:nth-child(2n) {
+  color: #769656;
+}
+
+.cords-18 {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #769656;
+}
+
+.cords-18 .cord:nth-child(2n) {
+  color: #eeeed2;
+}
+
+.cord {
+  font-size: 1.8rem;
+  flex-grow: 1;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  z-index: 1;
+}

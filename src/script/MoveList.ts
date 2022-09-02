@@ -1,11 +1,12 @@
-import { move } from "./move.js";
+import { move } from "./Move";
 
 class MoveList {
-  constructor(moveList) {
-    this.moveList = moveList;
+  moveList: HTMLDivElement;
+  constructor() {
+    this.moveList = document.querySelector(".move-list")!;
   }
 
-  drawMove(square, pieceType) {
+  drawMove(square : HTMLDivElement , pieceType : string) {
     if (move.moveCount % 2 == 1) {
       this.drawNewLine(square, pieceType);
     } else {
@@ -16,12 +17,12 @@ class MoveList {
       newMove.classList.add("move");
       newMove.innerHTML += square.dataset.mark;
 
-      this.moveList.lastChild.appendChild(pieceIcon);
-      this.moveList.lastChild.appendChild(newMove);
+      this.moveList.lastChild!.appendChild(pieceIcon);
+      this.moveList.lastChild!.appendChild(newMove);
     }
   }
 
-  drawNewLine(square, pieceType) {
+  drawNewLine(square : HTMLDivElement, pieceType : string) {
     const newContainer = document.createElement("div");
     newContainer.classList.add("move-container");
 
@@ -30,11 +31,11 @@ class MoveList {
 
     const newMove = document.createElement("span");
     newMove.classList.add("move");
-    newMove.textContent = square.dataset.mark;
+    newMove.textContent = square.dataset.mark!;
 
     const newTour = document.createElement("span");
     newTour.classList.add("tour");
-    newTour.textContent = move.tourCount;
+    newTour.textContent = move.tourCount.toString();
 
     this.moveList.appendChild(newContainer);
     newContainer.appendChild(newTour);
@@ -50,4 +51,4 @@ class MoveList {
   }
 }
 
-export const moveList = new MoveList(document.querySelector(".move-list"));
+export const moveList = new MoveList();

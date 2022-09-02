@@ -1,30 +1,42 @@
-export const PIECES_ARRAY = [];
-
 export class Pieces {
-  constructor(square) {
-    this.square = square;
+  firstMove?: boolean;
+  square: HTMLDivElement;
+  pieceType?: string;
+  color?: string;
 
-    this.firstMove = true;
+  constructor(
+    square: HTMLDivElement,
+    firstMove?: boolean,
+    pieceType?: string,
+    color?: string
+  ) {
+    this.square = square;
+    this.pieceType = pieceType;
+    this.color = color;
+
+    this.firstMove = firstMove ? firstMove : true;
   }
 
-  appendPiece(pieceType) {
-    const type = pieceType.split("_")[1];
-    const color = pieceType.split("_")[0];
-    const piece = document.createElement("div");
+  appendPiece(pieceType: string) {
+    const type = this.pieceType ? this.pieceType : pieceType.split("_")[1];
+    const color = this.color ? this.color : pieceType.split("_")[0];
 
-    piece.classList.add("pieces");
+    const piece = document.createElement("div");
 
     piece.dataset.piecetype = type;
     piece.dataset.piececolor = color;
 
-    if (type == "pawn" || type == "king") piece.dataset.firstmove = "true";
-    piece.style.backgroundImage = `url("./images/${pieceType}.svg")`;
+    piece.classList.add("pieces");
 
-    PIECES_ARRAY.push(piece);
+    if (type == "pawn" || type == "king") piece.dataset.firstmove = `${this.firstMove ? this.firstMove : "true"}`;
+    piece.style.backgroundImage = `url("./assets/${pieceType}.svg")`;
+
     this.square.appendChild(piece);
+
+    return piece;
   }
 
-  createPiece(mark) {
+  createPiece(mark: string) {
     if (mark == "a1" || mark == "a8" || mark == "h1" || mark == "h8") {
       if (mark == "a1" || mark == "h1") this.appendPiece("white_rook");
       if (mark == "a8" || mark == "h8") this.appendPiece("black_rook");
