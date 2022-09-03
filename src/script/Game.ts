@@ -55,15 +55,13 @@ class Game {
 
     button.buttonDisableState();
 
-    chessboard.squaresArray.forEach(
-      (square) => square.firstElementChild && square.firstElementChild!.remove()
-    );
+    chessboard.squaresArray.forEach(square => square.firstElementChild && square.firstElementChild!.remove());
     chessboard.removeSquares();
     chessboard.generateBoard();
 
     chessboard.chessboard.classList.remove("rotate");
     chessboard.chessboardContainer.classList.remove("reverse");
-    chessboard.cords.forEach((e) => e.classList.remove("rotate"));
+    chessboard.cords.forEach(e => e.classList.remove("rotate"));
 
     timer.timerFlag = true;
     timer.timerClear();

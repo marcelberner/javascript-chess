@@ -9,7 +9,8 @@ class MoveList {
   drawMove(square : HTMLDivElement , pieceType : string) {
     if (move.moveCount % 2 == 1) {
       this.drawNewLine(square, pieceType);
-    } else {
+    } 
+    else {
       const pieceIcon = document.createElement("i");
       pieceIcon.classList.add("fas", `fa-chess-${pieceType}`, "tour-icon");
 

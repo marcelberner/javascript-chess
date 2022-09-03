@@ -28,29 +28,25 @@
 }
 
 .start {
-  background-color: #95bb4a;
+  background-color: var(--button-start-color);
 }
 
 .disabled {
-  background-color: grey;
+  background-color: var(--button-disabled-color);
 }
 
 .start:hover,
 .button-restart:hover {
-  background-color: #acd853;
+  background-color: var(--button-start-hover-color);
   transform: scale(1.03);
 }
 
 .concede {
-  background-color: #e48225;
-}
-
-.concede:focus {
-  background-color: red;
+  background-color: var(--button-concede-color);
 }
 
 .concede:hover {
-  background-color: #fc8e27;
+  background-color: var(--button-concede-hover-color);
   transform: scale(1.03);
 }
 

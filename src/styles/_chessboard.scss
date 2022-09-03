@@ -48,23 +48,19 @@
 }
 
 .black {
-  background-color: #769656;
+  background-color: var(--black-sqare-color);
 }
 
 .white {
-  background-color: #eeeed2;
+  background-color: var(--white-sqare-color);
 }
 
 .danger {
-  background-color: rgb(192, 56, 56);
+  background-color: var(--danger-sqare-color);
 }
 
 .selected {
-  background-color: rgba(129, 186, 250);
-}
-
-.hint {
-  background-color: #d3d3d3;
+  background-color: var(--selected-sqare-color);
 }
 
 .cords-ah {
@@ -73,11 +69,11 @@
   width: 100%;
   align-self: flex-end;
   margin-bottom: 2px;
-  color: #eeeed2;
+  color: var(--white-sqare-color);
 }
 
 .cords-ah .cord:nth-child(2n) {
-  color: #769656;
+  color: var(--black-sqare-color);
 }
 
 .cords-18 {
@@ -85,11 +81,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  color: #769656;
+  color: var(--black-sqare-color);
 }
 
 .cords-18 .cord:nth-child(2n) {
-  color: #eeeed2;
+  color: var(--white-sqare-color);
 }
 
 .cord {

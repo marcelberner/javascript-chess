@@ -28,11 +28,15 @@ class Move {
     this.tourCount = 1;
     this.check = false;
   }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// MOVE GENERAL METHODS////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
   
   clearSelect() {
     this.selectedPiece = null;
     this.enemyPiece = null;
-    chessboard.squaresArray.forEach((e) => e.classList.remove("selected"));
+    chessboard.squaresArray.forEach(square => square.classList.remove("selected"));
   }
   
   setSelectedPiece(piece: HTMLDivElement, type: string) {
@@ -47,10 +51,7 @@ class Move {
   
   preventFriendlyFire(square: HTMLDivElement) {
     const playerColor = game.checkPlayerColor();
-    
-    const pieceToBeatColor = square.hasChildNodes()
-    ? (square.firstChild as HTMLDivElement).dataset.piececolor
-    : "";
+    const pieceToBeatColor = square.hasChildNodes() ? (square.firstChild as HTMLDivElement).dataset.piececolor : "";
     
     if (pieceToBeatColor == playerColor) return true;
     else return false;
@@ -65,6 +66,15 @@ class Move {
     else if (playerColor == "black" && squareLockBlack == "true") return true;
     else return false;
   }
+
+  beat(square: HTMLDivElement) {
+    square.firstChild!.remove();
+    points.incresePlayerPoints(this.enemyPiece!.type);
+  }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// PIECE MOVESET METHODS///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
   getPawnMoveset(cords : string, cordsIndex : number, pieceColor : string) {
 
@@ -172,18 +182,10 @@ class Move {
     const availableSquares = [];
 
     for (let i = 0; i < 7; i++) {
-      availableSquares.push(
-        `${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) + i}`
-      );
-      availableSquares.push(
-        `${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) - i}`
-      );
-      availableSquares.push(
-        `${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) + i}`
-      );
-      availableSquares.push(
-        `${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) - i}`
-      );
+      availableSquares.push(`${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) + i}`);
+      availableSquares.push(`${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) - i}`);
+      availableSquares.push(`${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) + i}`);
+      availableSquares.push(`${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) - i}`);
     }
 
     const correctMove = availableSquares.find((e) => e == squareCords);
@@ -227,18 +229,13 @@ class Move {
   }
 
   queenMoveRules(cords: string, squareCords: string, cordsIndex: number) {
-    if (
-      this.bishopMoveRules(cords, squareCords, cordsIndex) ||
-      this.rookMoveRules(cords, squareCords)
-    )
-      return true;
+    if (this.bishopMoveRules(cords, squareCords, cordsIndex) || this.rookMoveRules(cords, squareCords)) return true;
     else return false;
   }
 
-  beat(square: HTMLDivElement) {
-    square.firstChild!.remove();
-    points.incresePlayerPoints(this.enemyPiece!.type);
-  }
+///////////////////////////////////////////////////////////////////////////////////////////////
+// PIECE COLISION PREVENTS ////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
   preventPawnColision(
     pieceColor: string,
@@ -251,7 +248,7 @@ class Move {
 
     if (firstMove != "true") return;
 
-    const collidingObjectWhite = chessboard.squaresArray.find(e => e.dataset.mark == pawnMoveset.singleMove);
+    const collidingObjectWhite = chessboard.squaresArray.find(square => square.dataset.mark == pawnMoveset.singleMove);
 
     if (collidingObjectWhite!.hasChildNodes()) return true;
     else return false;
@@ -263,8 +260,7 @@ class Move {
     cordsIndex: number,
     kingCastle?: boolean
   ) {
-    const colMove =
-      parseInt(this.cordsArray.indexOf(squareCords[0]) as any) == cordsIndex;
+    const colMove = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) == cordsIndex;
     const rowMove = squareCords[1] == cords[1];
 
     const squaresToCheck: HTMLDivElement[] = [];
@@ -274,83 +270,58 @@ class Move {
       const bottom = parseInt(squareCords[1]) < parseInt(cords[1]);
 
       if (top) {
-        const suspectedSquaresCount =
-          parseInt(squareCords[1]) - parseInt(cords[1]) - 1;
+        const suspectedSquaresCount =parseInt(squareCords[1]) - parseInt(cords[1]) - 1;
 
         for (let i = 0; i < suspectedSquaresCount; i++) {
-          chessboard.squaresArray.find((e) => {
-            const mark = e.dataset.mark;
+          chessboard.squaresArray.find(square => {
+            const mark = square.dataset.mark;
+
             if (mark == `${squareCords[0]}${parseInt(cords[1]) + 1 + i}`) {
-              squaresToCheck.push(e);
+              squaresToCheck.push(square);
             }
           });
         }
-      } else if (bottom) {
-        const suspectedSquaresCount =
-          parseInt(cords[1]) - parseInt(squareCords[1]) - 1;
+      } 
+      else if (bottom) {
+        const suspectedSquaresCount = parseInt(cords[1]) - parseInt(squareCords[1]) - 1;
 
         for (let i = 0; i < suspectedSquaresCount; i++) {
-          chessboard.squaresArray.find((e) => {
-            const mark = e.dataset.mark;
+          chessboard.squaresArray.find(square => {
+            const mark = square.dataset.mark;
+
             if (mark == `${squareCords[0]}${parseInt(cords[1]) - 1 - i}`) {
-              squaresToCheck.push(e);
+              squaresToCheck.push(square);
             }
           });
         }
       }
-    } else if (rowMove) {
-      const left =
-        parseInt(this.cordsArray.indexOf(squareCords[0]) as any) <
-        parseInt(this.cordsArray.indexOf(cords[0]) as any);
-      const right =
-        parseInt(this.cordsArray.indexOf(squareCords[0]) as any) >
-        parseInt(this.cordsArray.indexOf(cords[0]) as any);
+    } 
+    else if (rowMove) {
+      const left = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) < parseInt(this.cordsArray.indexOf(cords[0]) as any);
+      const right = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) > parseInt(this.cordsArray.indexOf(cords[0]) as any);
 
       if (left) {
-        const suspectedSquaresCount =
-          parseInt(this.cordsArray.indexOf(cords[0]) as any) -
-          parseInt(this.cordsArray.indexOf(squareCords[0]) as any) -
-          1;
+        const suspectedSquaresCount = parseInt(this.cordsArray.indexOf(cords[0]) as any) - parseInt(this.cordsArray.indexOf(squareCords[0]) as any) - 1;
 
         for (let i = 0; i < suspectedSquaresCount; i++) {
-          chessboard.squaresArray.find((e) => {
-            const mark = e.dataset.mark;
+          chessboard.squaresArray.find(square => {
+            const mark = square.dataset.mark;
 
-            if (
-              mark ==
-              `${
-                this.cordsArray[
-                  parseInt(this.cordsArray.indexOf(squareCords[0]) as any) +
-                    1 +
-                    i
-                ]
-              }${cords[1]}`
-            ) {
-              squaresToCheck.push(e);
+            if (mark == `${this.cordsArray[parseInt(this.cordsArray.indexOf(squareCords[0]) as any) + 1 + i]}${cords[1]}`) {
+              squaresToCheck.push(square);
             }
           });
         }
-      } else if (right) {
-        const suspectedSquaresCount =
-          parseInt(this.cordsArray.indexOf(squareCords[0]) as any) -
-          parseInt(this.cordsArray.indexOf(cords[0]) as any) -
-          1;
+      } 
+      else if (right) {
+        const suspectedSquaresCount = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) - parseInt(this.cordsArray.indexOf(cords[0]) as any) - 1;
 
         for (let i = 0; i < suspectedSquaresCount; i++) {
-          chessboard.squaresArray.find((e) => {
-            const mark = e.dataset.mark;
+          chessboard.squaresArray.find(square => {
+            const mark = square.dataset.mark;
 
-            if (
-              mark ==
-              `${
-                this.cordsArray[
-                  parseInt(this.cordsArray.indexOf(squareCords[0]) as any) -
-                    1 -
-                    i
-                ]
-              }${cords[1]}`
-            ) {
-              squaresToCheck.push(e);
+            if (mark == `${this.cordsArray[parseInt(this.cordsArray.indexOf(squareCords[0]) as any) - 1 - i]}${cords[1]}`) {
+              squaresToCheck.push(square);
             }
           });
         }
@@ -358,9 +329,7 @@ class Move {
     }
 
     const colision = squaresToCheck.find((e) => e.hasChildNodes());
-    const kingDanger = squaresToCheck.find((e) =>
-      this.preventWrongSquareMove(e)
-    );
+    const kingDanger = squaresToCheck.find((e) => this.preventWrongSquareMove(e));
 
     if (kingCastle && kingDanger) return true;
     if (colision) return true;
@@ -374,125 +343,77 @@ class Move {
   ) {
     const squaresToCheck: HTMLDivElement[] = [];
 
-    const topRight =
-      parseInt(this.cordsArray.indexOf(squareCords[0]) as any) >
-        parseInt(this.cordsArray.indexOf(cords[0]) as any) &&
-      parseInt(squareCords[1]) > parseInt(cords[1]);
+    const topRight =parseInt(this.cordsArray.indexOf(squareCords[0]) as any) > parseInt(this.cordsArray.indexOf(cords[0]) as any) 
+    && parseInt(squareCords[1]) > parseInt(cords[1]);
 
-    const topLef =
-      parseInt(this.cordsArray.indexOf(squareCords[0]) as any) <
-        parseInt(this.cordsArray.indexOf(cords[0]) as any) &&
-      parseInt(squareCords[1]) > parseInt(cords[1]);
+    const topLef = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) < parseInt(this.cordsArray.indexOf(cords[0]) as any) 
+    && parseInt(squareCords[1]) > parseInt(cords[1]);
 
-    const BottomRight =
-      parseInt(this.cordsArray.indexOf(squareCords[0]) as any) >
-        parseInt(this.cordsArray.indexOf(cords[0]) as any) &&
-      parseInt(squareCords[1]) < parseInt(cords[1]);
+    const BottomRight = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) > parseInt(this.cordsArray.indexOf(cords[0]) as any) 
+    && parseInt(squareCords[1]) < parseInt(cords[1]);
 
-    const BottomLeft =
-      parseInt(this.cordsArray.indexOf(squareCords[0]) as any) <
-        parseInt(this.cordsArray.indexOf(cords[0]) as any) &&
-      parseInt(squareCords[1]) < parseInt(cords[1]);
+    const BottomLeft = parseInt(this.cordsArray.indexOf(squareCords[0]) as any) < parseInt(this.cordsArray.indexOf(cords[0]) as any) 
+    && parseInt(squareCords[1]) < parseInt(cords[1]);
 
     if (topLef) {
       for (let i = 0; i < 7; i++) {
-        chessboard.squaresArray.find((e) => {
-          const mark = e.dataset.mark;
+        chessboard.squaresArray.find(square => {
+          const mark = square.dataset.mark;
 
           if (mark == cords) return;
-          if (
-            this.cordsArray.indexOf(mark![0]) <=
-            this.cordsArray.indexOf(squareCords[0])
-          )
-            return;
-
-          if (
-            mark ==
-            `${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) + i}`
-          ) {
-            squaresToCheck.push(e);
-          }
+          if (this.cordsArray.indexOf(mark![0]) <= this.cordsArray.indexOf(squareCords[0])) return;
+          if (mark == `${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) + i}`) squaresToCheck.push(square);
         });
       }
     }
 
     if (BottomLeft) {
       for (let i = 0; i < 7; i++) {
-        chessboard.squaresArray.find((e) => {
-          const mark = e.dataset.mark;
+        chessboard.squaresArray.find(square => {
+          const mark = square.dataset.mark;
 
           if (mark == cords) return;
-          if (
-            this.cordsArray.indexOf(mark![0]) <=
-            this.cordsArray.indexOf(squareCords[0])
-          )
-            return;
-
-          if (
-            mark ==
-            `${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) - i}`
-          ) {
-            squaresToCheck.push(e);
-          }
+          if (this.cordsArray.indexOf(mark![0]) <= this.cordsArray.indexOf(squareCords[0])) return;
+          if (mark == `${this.cordsArray[cordsIndex - i]}${parseInt(cords[1]) - i}`) squaresToCheck.push(square);
         });
       }
     }
     if (topRight) {
       for (let i = 0; i < 7; i++) {
-        chessboard.squaresArray.find((e) => {
-          const mark = e.dataset.mark;
+        chessboard.squaresArray.find(square => {
+          const mark = square.dataset.mark;
 
           if (mark == cords) return;
-          if (
-            this.cordsArray.indexOf(mark![0]) >=
-            this.cordsArray.indexOf(squareCords[0])
-          )
-            return;
-
-          if (
-            mark ==
-            `${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) + i}`
-          ) {
-            squaresToCheck.push(e);
-          }
+          if (this.cordsArray.indexOf(mark![0]) >= this.cordsArray.indexOf(squareCords[0])) return;
+          if (mark == `${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) + i}`) squaresToCheck.push(square);
         });
       }
     }
     if (BottomRight) {
       for (let i = 0; i < 7; i++) {
-        chessboard.squaresArray.find((e) => {
-          const mark = e.dataset.mark;
+        chessboard.squaresArray.find(square => {
+          const mark = square.dataset.mark;
 
           if (mark == cords) return;
-          if (
-            this.cordsArray.indexOf(mark![0]) >=
-            this.cordsArray.indexOf(squareCords[0])
-          )
-            return;
-
-          if (
-            mark ==
-            `${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) - i}`
-          ) {
-            squaresToCheck.push(e);
-          }
+          if (this.cordsArray.indexOf(mark![0]) >= this.cordsArray.indexOf(squareCords[0])) return;
+          if (mark == `${this.cordsArray[cordsIndex + i]}${parseInt(cords[1]) - i}`) squaresToCheck.push(square);
         });
       }
     }
 
-    const colision = squaresToCheck.find((e) => e.hasChildNodes());
+    const colision = squaresToCheck.find(square => square.hasChildNodes());
     if (colision) return true;
     else return false;
   }
 
   preventQueenColision(cords: string, squareCords: string, cordsIndex: number) {
-    if (
-      this.preventRookColision(cords, squareCords, cordsIndex) ||
-      this.preventBishopColision(cords, squareCords, cordsIndex)
-    )
-      return true;
+    if (this.preventRookColision(cords, squareCords, cordsIndex) || this.preventBishopColision(cords, squareCords, cordsIndex)) return true;
     else return false;
   }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// KING MECHANICS METHODS//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
   checkCanCastle(
     piece: HTMLDivElement,
@@ -503,38 +424,19 @@ class Move {
   ) {
     const kingCastle = true;
 
-    if (piece.dataset.firstmove == "true") {
-      if (pieceColor == "white") {
-        if (squareCords == "g1") {
-          if (
-            this.preventRookColision(cords, squareCords, cordsIndex, kingCastle)
-          )
-            return false;
-          else return true;
-        } else if (squareCords == "c1") {
-          if (
-            this.preventRookColision(cords, squareCords, cordsIndex, kingCastle)
-          )
-            return false;
-          else return true;
-        } else return false;
-      } else if (pieceColor == "black") {
-        if (squareCords == "g8") {
-          if (
-            this.preventRookColision(cords, squareCords, cordsIndex, kingCastle)
-          )
-            return false;
-          else return true;
-        } else if (squareCords == "c8") {
-          if (
-            this.preventRookColision(cords, squareCords, cordsIndex, kingCastle)
-          )
-            return false;
-          else return true;
-        } else return false;
-      } else return false;
-    } else return false;
+    if (piece.dataset.firstmove != "true") return;
+
+    if ((pieceColor == "white" && squareCords == "g1") || (pieceColor == "black" && squareCords == "g8")) {
+      if (this.preventRookColision(cords, squareCords, cordsIndex, kingCastle)) return false;
+      else return true;
+    } 
+    else if ((pieceColor == "white" && squareCords == "c1") || (pieceColor == "black" && squareCords == "c8")) {
+      if (this.preventRookColision(cords, squareCords, cordsIndex, kingCastle)) return false;
+      else return true;
+    } 
+    else return false;
   }
+
 
   castle(
     piece: HTMLDivElement,
@@ -548,45 +450,24 @@ class Move {
     const castled = true;
 
     if (squareCords == "g1") {
-      rookPiece = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "h1"
-      )!.firstElementChild;
-      newRookPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "f1"
-      );
-      newKingPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "g1"
-      );
-    } else if (squareCords == "c1") {
-      rookPiece = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "a1"
-      )!.firstElementChild;
-      newRookPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "d1"
-      );
-      newKingPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "c1"
-      );
-    } else if (squareCords == "g8") {
-      rookPiece = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "h8"
-      )!.firstElementChild;
-      newRookPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "f8"
-      );
-      newKingPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "g8"
-      );
-    } else if (squareCords == "c8") {
-      rookPiece = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "a8"
-      )!.firstElementChild;
-      newRookPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "d8"
-      );
-      newKingPlace = chessboard.squaresArray.find(
-        (e) => e.dataset.mark == "c8"
-      );
+      rookPiece = chessboard.squaresArray.find(square => square.dataset.mark == "h1")!.firstElementChild;
+      newRookPlace = chessboard.squaresArray.find(square => square.dataset.mark == "f1");
+      newKingPlace = chessboard.squaresArray.find(square => square.dataset.mark == "g1");
+    } 
+    else if (squareCords == "c1") {
+      rookPiece = chessboard.squaresArray.find(square => square.dataset.mark == "a1")!.firstElementChild;
+      newRookPlace = chessboard.squaresArray.find(square => square.dataset.mark == "d1");
+      newKingPlace = chessboard.squaresArray.find(square => square.dataset.mark == "c1");
+    } 
+    else if (squareCords == "g8") {
+      rookPiece = chessboard.squaresArray.find(square => square.dataset.mark == "h8")!.firstElementChild;
+      newRookPlace = chessboard.squaresArray.find(square => square.dataset.mark == "f8");
+      newKingPlace = chessboard.squaresArray.find(square => square.dataset.mark == "g8");
+    } 
+    else if (squareCords == "c8") {
+      rookPiece = chessboard.squaresArray.find(square => square.dataset.mark == "a8")!.firstElementChild;
+      newRookPlace = chessboard.squaresArray.find(square => square.dataset.mark == "d8");
+      newKingPlace = chessboard.squaresArray.find(square => square.dataset.mark == "c8");
     }
 
     newRookPlace!.appendChild(rookPiece!);
@@ -599,29 +480,20 @@ class Move {
     const playerColor = game.checkPlayerColor();
     let isDanger = false;
 
-    chessboard.squaresArray.find((e) => {
+    chessboard.squaresArray.find(square => {
       if (playerColor == "white") {
-        if (
-          e.firstElementChild &&
-          (e.firstElementChild as HTMLDivElement).dataset.piececolor ==
-            "white" &&
-          (e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" &&
-          e.dataset.lock_for_white == "true"
-        ) {
+        if (square.firstElementChild && (square.firstElementChild as HTMLDivElement).dataset.piececolor == "white" 
+        && (square.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && square.dataset.lock_for_white == "true") {
           this.check = true;
-          e.classList.add("danger");
+          square.classList.add("danger");
           isDanger = true;
         }
-      } else if (playerColor == "black") {
-        if (
-          e.firstElementChild &&
-          (e.firstElementChild as HTMLDivElement).dataset.piececolor ==
-            "black" &&
-          (e.firstChild as HTMLDivElement).dataset.piecetype == "king" &&
-          e.dataset.lock_for_black == "true"
-        ) {
+      } 
+      else if (playerColor == "black") {
+        if (square.firstElementChild && (square.firstElementChild as HTMLDivElement).dataset.piececolor == "black" 
+        && (square.firstChild as HTMLDivElement).dataset.piecetype == "king" && square.dataset.lock_for_black == "true") {
           this.check = true;
-          e.classList.add("danger");
+          square.classList.add("danger");
           isDanger = true;
         }
       }
@@ -641,13 +513,18 @@ class Move {
     if (this.lookForCheck()) {
       currentSquare!.appendChild(piece);
       return false;
-    } else {
+    } 
+    else {
       this.check = false;
       chessboard.squaresArray.forEach((e) => e.classList.remove("danger"));
       currentSquare!.appendChild(piece);
       return true;
     }
   }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// PIECE MOVE VERIFICATION ////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
   checkCanMove(
     piece: HTMLDivElement,
@@ -656,8 +533,7 @@ class Move {
   ) {
     chessboard.takeSnapshot();
 
-    const cords = (this.selectedPiece!.parentNode as HTMLDivElement)!.dataset
-      .mark;
+    const cords = (this.selectedPiece!.parentNode as HTMLDivElement)!.dataset.mark;
     let cordsIndex = this.cordsArray.indexOf(cords![0]);
 
     const squareCords = square.dataset.mark;
@@ -668,22 +544,14 @@ class Move {
 
     if (pieceType == "pawn") {
       if (this.preventSameMove(cords!, squareCords!)) return;
-      if (
-        this.pawnMoveRules(
-          piece,
-          cords!,
-          squareCords!,
-          pieceColor!,
-          square,
-          cordsIndex
-        )
-      ) {
+      if (this.pawnMoveRules(piece, cords!, squareCords!, pieceColor!, square, cordsIndex)) {
         if (this.preventPawnColision(pieceColor!, cords!, piece, cordsIndex)) return;
         if (this.preventFriendlyFire(square)) return;
         if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
-    } else if (pieceType == "rook") {
+    } 
+    else if (pieceType == "rook") {
       if (this.preventSameMove(cords!, squareCords!)) return;
       if (this.rookMoveRules(cords!, squareCords!)) {
         if (this.preventRookColision(cords!, squareCords!, cordsIndex)) return;
@@ -691,41 +559,35 @@ class Move {
         if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
-    } else if (pieceType == "knight") {
+    } 
+    else if (pieceType == "knight") {
       if (this.preventSameMove(cords!, squareCords!)) return;
       if (this.knightMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventFriendlyFire(square)) return;
         if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
-    } else if (pieceType == "king") {
+    } 
+    else if (pieceType == "king") {
       if (this.preventSameMove(cords!, squareCords!)) return;
-      if (
-        this.checkCanCastle(
-          piece,
-          pieceColor!,
-          squareCords!,
-          cords!,
-          cordsIndex
-        )
-      )
-        this.castle(piece, square, squareCords!, pieceType);
+      if (this.checkCanCastle(piece, pieceColor!, squareCords!, cords!, cordsIndex)) this.castle(piece, square, squareCords!, pieceType);
       else if (this.kingMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventFriendlyFire(square)) return;
         if (this.preventWrongSquareMove(square)) return;
         if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
-    } else if (pieceType == "bishop") {
+    } 
+    else if (pieceType == "bishop") {
       if (this.preventSameMove(cords!, squareCords!)) return;
       if (this.bishopMoveRules(cords!, squareCords!, cordsIndex)) {
-        if (this.preventBishopColision(cords!, squareCords!, cordsIndex))
-          return;
+        if (this.preventBishopColision(cords!, squareCords!, cordsIndex)) return;
         if (this.preventFriendlyFire(square)) return;
         if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
-    } else if (pieceType == "queen") {
+    } 
+    else if (pieceType == "queen") {
       if (this.preventSameMove(cords!, squareCords!)) return;
       if (this.queenMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventQueenColision(cords!, squareCords!, cordsIndex)) return;
@@ -794,6 +656,10 @@ class Move {
     else return false;
   }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+// CHECK MATE METHODS//////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
   canPreventMate(playerColor: string) {
     chessboard.takeSnapshot();
     const protect = true;
@@ -849,10 +715,7 @@ class Move {
 
     chessboard.clearLock();
     chessboard.lockSquare();
-    const notSafe = this.lookForCheck();
-
-    console.log(notSafe);
-
+    const notSafe = this.lookForCheck();    
     
     if(notSafe) return false
     else {
@@ -863,19 +726,13 @@ class Move {
 
   isMate() {
     const playerColor = game.checkPlayerColor();
-    const kingSquare = chessboard.squaresArray.find(
-      (square) =>
-        square.firstElementChild &&
-        (square.firstElementChild as HTMLDivElement).dataset.piecetype ==
-          "king" &&
-        (square.firstElementChild as HTMLDivElement).dataset.piececolor ==
-          playerColor
+    const kingSquare = chessboard.squaresArray.find(square => square.firstElementChild 
+      && (square.firstElementChild as HTMLDivElement).dataset.piecetype == "king" 
+      && (square.firstElementChild as HTMLDivElement).dataset.piececolor == playerColor
     );
 
     const emptyPlace = this.lookForEmptyPlace(kingSquare!, playerColor);
     const canPreventMate = this.canPreventMate(playerColor);
-
-    console.log(emptyPlace, canPreventMate);
 
     if(!emptyPlace && !canPreventMate) game.endGame();
   }

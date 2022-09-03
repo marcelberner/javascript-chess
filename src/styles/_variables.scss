@@ -1,8 +1,32 @@
 :root {
-  //game
+  //GAME
   --bg-color: #312e2b;
   --primary-color: #769656;
   --secondary-color: #eeeed2;
+  --scroll-color: #696969;
+
+  //BUTTON
+  --button-start-color: #95bb4a;
+  --button-start-hover-color: #acd853;
+  --button-disabled-color: grey;
+  --button-concede-color: #e48225;
+  --button-concede-hover-color: #fc8e27;
+
+  //CHESSBOARD
+  --black-sqare-color: #769656;
+  --white-sqare-color: #eeeed2;
+  --danger-sqare-color: rgb(192, 56, 56);
+  --selected-sqare-color: rgba(129, 186, 250);
+
+  //MODAL
+  --modal-bg-color: aliceblue;
+  --modal-info-color: rgb(224, 231, 238);
+
+  //MOVELIST
+  --list-bg-color: #272522;
+  --list-nth-color: #2b2926;
+  --icon-color: #b4b3b2;
+  --tour-txt-color: #7d7c6d;
 }
 
 $smartphone: 460px;
