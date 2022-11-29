@@ -99,13 +99,14 @@ class Move {
     const playerColor = game.checkPlayerColor();
     const newPiece = new Pieces(square);
 
+    if(square.hasChildNodes()) this.beat(square);
+    
     const pieceElement = newPiece.appendPiece(`${playerColor}_queen`);
 
     const pieceType = pieceElement.dataset.piecetype;
     
     if (playerColor == "black") pieceElement.classList.add("rotate");
     
-    this.beat(square);
     this.moved(pieceElement, square, pieceType!);
   }
   
