@@ -532,7 +532,6 @@ class Move {
     square: HTMLDivElement,
     pieceType: string
   ) {
-    chessboard.takeSnapshot();
 
     const cords = (this.selectedPiece!.parentNode as HTMLDivElement)!.dataset.mark;
     let cordsIndex = this.cordsArray.indexOf(cords![0]);
@@ -605,11 +604,8 @@ class Move {
     pieceType: string,
     castled?: boolean
   ) {
-    if (!this.checkIsSafe(piece, square)) {
-      chessboard.recoverSnapshot();
-      return;
-    }
-
+    if (!this.checkIsSafe(piece, square)) return;
+    
     this.moveCount++;
     if (this.moveCount % 2 == 0) this.tourCount++;
 
@@ -631,6 +627,8 @@ class Move {
     this.clearSelect();
 
     if (this.lookForCheck()) this.isMate();
+    chessboard.clearLock();
+    chessboard.lockSquare();
   }
 
   lookForEmptyPlace(kingSquare: HTMLDivElement, enemyColor: string) {
@@ -665,14 +663,14 @@ class Move {
     chessboard.takeSnapshot();
     const protect = true;
     chessboard.squaresArray.forEach((square) => {
-      const piece = square.firstElementChild && square.firstElementChild as HTMLDivElement;
+      const piece = square.hasChildNodes() ? (square.firstElementChild as HTMLDivElement) : false;
       const cords = square.dataset.mark!;
       const cordsIndex = this.cordsArray.indexOf(cords[0]);
 
       
-      if (piece && (piece.dataset.piececolor == (playerColor == "white" ? "white" : "black"))) {
+      if (piece && (piece.dataset.piececolor == playerColor)) {
         
-        if(piece && piece.dataset.piecetype == "pawn") {
+        if(piece.dataset.piecetype == "pawn") {
 
           const pawnMoveset = this.getPawnMoveset(cords, cordsIndex, playerColor)
           const firstMove = piece.dataset.firstmove;
@@ -682,19 +680,22 @@ class Move {
           const frontSquare = chessboard.findSquare(pawnMoveset.singleMove);
           const doubleFrontSquare = chessboard.findSquare(pawnMoveset.doubleMove);
 
+          const placeholderElement = document.createElement('div');
+          placeholderElement.classList.add('placeholder');
 
-          if(frontSquare) frontSquare.appendChild(document.createElement("div"));
+
+          if(frontSquare) frontSquare.appendChild(placeholderElement);
 
           if(doubleFrontSquare && firstMove && !frontSquare!.hasChildNodes()) {
-            chessboard.findSquare(pawnMoveset.doubleMove)?.appendChild(document.createElement("div"));
+            chessboard.findSquare(pawnMoveset.doubleMove)?.appendChild(placeholderElement);
           }
           if(leftSquare && leftSquare.hasChildNodes()){
             leftSquare.firstElementChild && leftSquare.firstElementChild.remove();
-            leftSquare.appendChild(document.createElement("div"));
+            leftSquare.appendChild(placeholderElement);
           } 
           if(rightSquare && rightSquare.hasChildNodes()){
             rightSquare.firstElementChild && rightSquare.firstElementChild.remove();
-            rightSquare.appendChild(document.createElement("div"));
+            rightSquare.appendChild(placeholderElement);
           } 
           
         }
@@ -719,10 +720,7 @@ class Move {
     const notSafe = this.lookForCheck();    
     
     if(notSafe) return false
-    else {
-      chessboard.recoverSnapshot();
-      return true
-    };
+    else return true
   }
 
   isMate() {
@@ -736,6 +734,7 @@ class Move {
     const canPreventMate = this.canPreventMate(playerColor);
 
     if(!emptyPlace && !canPreventMate) game.endGame();
+    else chessboard.recoverSnapshot();
   }
 }
 

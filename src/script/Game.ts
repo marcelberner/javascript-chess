@@ -44,6 +44,7 @@ class Game {
     modal.updateModal();
     modal.changeModalState();
     button.buttonDisableState();
+    return
   }
 
   restart() {
