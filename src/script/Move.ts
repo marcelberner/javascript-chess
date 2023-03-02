@@ -720,7 +720,10 @@ class Move {
     const notSafe = this.lookForCheck();    
     
     if(notSafe) return false
-    else return true
+    else {
+      chessboard.recoverSnapshot();
+      return true
+    }
   }
 
   isMate() {
@@ -734,7 +737,6 @@ class Move {
     const canPreventMate = this.canPreventMate(playerColor);
 
     if(!emptyPlace && !canPreventMate) game.endGame();
-    else chessboard.recoverSnapshot();
   }
 }
 
