@@ -547,7 +547,6 @@ class Move {
       if (this.pawnMoveRules(piece, cords!, squareCords!, pieceColor!, square, cordsIndex)) {
         if (this.preventPawnColision(pieceColor!, cords!, piece, cordsIndex)) return;
         if (this.preventFriendlyFire(square)) return;
-        if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
     } 
@@ -556,7 +555,6 @@ class Move {
       if (this.rookMoveRules(cords!, squareCords!)) {
         if (this.preventRookColision(cords!, squareCords!, cordsIndex)) return;
         if (this.preventFriendlyFire(square)) return;
-        if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
     } 
@@ -564,7 +562,6 @@ class Move {
       if (this.preventSameMove(cords!, squareCords!)) return;
       if (this.knightMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventFriendlyFire(square)) return;
-        if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
     } 
@@ -574,7 +571,6 @@ class Move {
       else if (this.kingMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventFriendlyFire(square)) return;
         if (this.preventWrongSquareMove(square)) return;
-        if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
     } 
@@ -583,7 +579,6 @@ class Move {
       if (this.bishopMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventBishopColision(cords!, squareCords!, cordsIndex)) return;
         if (this.preventFriendlyFire(square)) return;
-        if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
     } 
@@ -592,7 +587,6 @@ class Move {
       if (this.queenMoveRules(cords!, squareCords!, cordsIndex)) {
         if (this.preventQueenColision(cords!, squareCords!, cordsIndex)) return;
         if (this.preventFriendlyFire(square)) return;
-        if (this.enemyPiece) this.beat(square);
         this.moved(piece, square, pieceType);
       }
     }
@@ -605,7 +599,8 @@ class Move {
     castled?: boolean
   ) {
     if (!this.checkIsSafe(piece, square)) return;
-    
+    if (this.enemyPiece) this.beat(square);
+
     this.moveCount++;
     if (this.moveCount % 2 == 0) this.tourCount++;
 
@@ -660,7 +655,7 @@ class Move {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
   canPreventMate(playerColor: string) {
-    chessboard.takeSnapshot();
+    // chessboard.takeSnapshot();
     const protect = true;
     chessboard.squaresArray.forEach((square) => {
       const piece = square.hasChildNodes() ? (square.firstElementChild as HTMLDivElement) : false;
@@ -718,15 +713,16 @@ class Move {
     chessboard.clearLock();
     chessboard.lockSquare();
     const notSafe = this.lookForCheck();    
+    chessboard.recoverSnapshot();
     
     if(notSafe) return false
     else {
-      chessboard.recoverSnapshot();
       return true
     }
   }
 
   isMate() {
+    chessboard.takeSnapshot();
     const playerColor = game.checkPlayerColor();
     const kingSquare = chessboard.squaresArray.find(square => square.firstElementChild 
       && (square.firstElementChild as HTMLDivElement).dataset.piecetype == "king" 
