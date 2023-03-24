@@ -12,6 +12,14 @@
   max-width: 81vh;
 }
 
+// .placeholder {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   background-color: aqua;
+//   border: 1px solid red;
+// }
+
 .chessboard {
   position: relative;
   display: grid;
@@ -39,6 +47,7 @@
 }
 
 .square {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;

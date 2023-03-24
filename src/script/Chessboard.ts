@@ -119,7 +119,8 @@ class Chessboard {
   }
 
   removeSquares() {
-    this.squaresArray.forEach(square => square.remove());
+    this.squaresArray = [];
+    this.chessboard.innerHTML = "";
   }
 
   generateBoard() {
@@ -165,12 +166,14 @@ class Chessboard {
   protectKing(square : HTMLDivElement) {
     const playerColor = game.checkPlayerColor();
     const piece = square.firstElementChild as HTMLDivElement;
+    const placeholderElement = document.createElement("div")
+    placeholderElement.classList.add('placeholder');
 
     if(square.hasChildNodes() && piece.dataset.piececolor && piece.dataset.piececolor != playerColor) {
       square.firstElementChild!.remove();
-      square.appendChild(document.createElement("div"));
+      square.appendChild(placeholderElement);
     }
-    else square.appendChild(document.createElement("div"));    
+    else square.appendChild(placeholderElement);    
   }
 
   lockSquare() {
@@ -224,7 +227,7 @@ class Chessboard {
   lockByKing(cords : string, cordsIndex: number, pieceColor : string) {
     const kingMoveset = move.getKingMoveset(cords, cordsIndex);
     const squaresToLock = kingMoveset.map(move => this.squaresArray.find(square => square.dataset.mark == move));
-
+    
     squaresToLock.forEach((e) => {
       if (e != undefined) {
         if (pieceColor == "white") e.dataset.lock_for_black = "true";
@@ -232,13 +235,14 @@ class Chessboard {
       }
     });
   }
-
+  
   lockByBishop(cordsArray : string[], cords : string, cordsIndex: number, pieceColor : string, protect? : boolean) {
     let topLeftLoopStoper = false;
     let topRighttLoopStoper = false;
     let bottomLeftLoopStoper = false;
     let bottomRightLoopStoper = false;
-
+    const enemyColor = pieceColor == "white" ? "black" : "white";
+    
     for (let i = 0; i < 7; i++) {
       for (let e of this.squaresArray) {
         const mark = e.dataset.mark;
@@ -248,68 +252,77 @@ class Chessboard {
           if (mark == `${cordsArray[cordsIndex - i]}${parseInt(cords[1]) + i}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes() && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") topLeftLoopStoper = true;
+            if (e.hasChildNodes() && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) topLeftLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
       }
     }
-
+    
     for (let i = 0; i < 7; i++) {
       for (let e of this.squaresArray) {
         const mark = e.dataset.mark;
-
+        
         if (!bottomLeftLoopStoper) {
           if (mark == cords) continue;
           if (mark == `${cordsArray[cordsIndex - i]}${parseInt(cords[1]) - i}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") bottomLeftLoopStoper = true;
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) bottomLeftLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
       }
     }
-
+    
     for (let i = 0; i < 7; i++) {
       for (let e of this.squaresArray) {
         const mark = e.dataset.mark;
-
+        
         if (!topRighttLoopStoper) {
           if (mark == cords) continue;
           if (mark == `${cordsArray[cordsIndex + i]}${parseInt(cords[1]) + i}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") topRighttLoopStoper = true;
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) topRighttLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
       }
     }
-
+    
     for (let i = 0; i < 7; i++) {
       for (let e of this.squaresArray) {
         const mark = e.dataset.mark;
-
+        
         if (!bottomRightLoopStoper) {
           if (mark == cords) continue;
           if (mark == `${cordsArray[cordsIndex + i]}${parseInt(cords[1]) - i}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") bottomRightLoopStoper = true;
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) bottomRightLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
       }
     }
   }
-
+  
   lockByRook(cordsArray : string[], cords : string, pieceColor : string, protect? : boolean) {
     let topLoopStoper = false;
     let leftLoopStoper = false;
     let bottomLoopStoper = false;
     let rightLoopStoper = false;
-
+    const enemyColor = pieceColor == "white" ? "black" : "white";
+    
     for (let i = 0; i < 7; i++) {
       for (let e of this.squaresArray) {
         const mark = e.dataset.mark;
@@ -318,7 +331,9 @@ class Chessboard {
           if (mark == `${cords[0]}${parseInt(cords[1]) + 1 + i}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") topLoopStoper = true;
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) topLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
@@ -333,8 +348,10 @@ class Chessboard {
           if (mark == `${cords[0]}${parseInt(cords[1]) - 1 - i}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") bottomLoopStoper = true;
             if(protect) this.protectKing(e);
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) bottomLoopStoper = true;
           }
         }
       }
@@ -348,7 +365,9 @@ class Chessboard {
           if (mark ==`${cordsArray[parseInt(cordsArray.indexOf(cords[0]) as any) + 1 + i]}${cords[1]}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") leftLoopStoper = true;
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) leftLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
@@ -363,7 +382,9 @@ class Chessboard {
           if (mark ==`${cordsArray[parseInt(cordsArray.indexOf(cords[0]) as any ) - 1 - i]}${cords[1]}`) {
             if (pieceColor == "white") e.dataset.lock_for_black = "true";
             if (pieceColor == "black") e.dataset.lock_for_white = "true";
-            if (e.hasChildNodes()  && (e.firstElementChild as HTMLDivElement).dataset.piecetype != "king") rightLoopStoper = true;
+            if (e.hasChildNodes()  && !((e.firstElementChild as HTMLDivElement).dataset.piecetype == "king" && 
+            (e.firstElementChild as HTMLDivElement).dataset.piececolor == enemyColor) && 
+            !(protect && (e.firstElementChild as HTMLDivElement).classList.contains('placeholder'))) rightLoopStoper = true;
             if(protect) this.protectKing(e);
           }
         }
