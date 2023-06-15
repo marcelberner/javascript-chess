@@ -2,6 +2,9 @@
 
 An application that allows you to play chess with a friend on one computer. In addition to the basic mechanics of moving pawns, the game has features such as tracking and blocking illegal moves, checkmate detection, player time countdown and point counting.
 
+### Live demo
+You can find live demo [here](https://chess-javascript.web.app)
+
 ## Getting Started
 
 ### Dependencies
